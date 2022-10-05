@@ -11,6 +11,21 @@ from auditlog.models import LogEntry
 threadlocal = threading.local()
 
 
+class WrappablePartial(partial):
+
+    @property
+    def __module__(self):
+        return self.func.__module__
+
+    @property
+    def __name__(self):
+        return self.func.__name__
+
+    @property
+    def __doc__(self):
+        return self.func.__doc__
+
+
 @contextlib.contextmanager
 def set_actor(actor, remote_addr=None):
     """Connect a signal receiver with current user attached."""
@@ -21,9 +36,10 @@ def set_actor(actor, remote_addr=None):
     }
 
     # Connect signal for automatic logging
-    set_actor = partial(
+    set_actor = WrappablePartial(
         _set_actor, user=actor, signal_duid=threadlocal.auditlog["signal_duid"]
     )
+
     pre_save.connect(
         set_actor,
         sender=LogEntry,
