@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auditlog', '0008_alter_logentry_id'),
+        ('auditlog', '0008_action_index.py'),
         ('auditlog', '0010_alter_logentry_timestamp'),
     ]
 
